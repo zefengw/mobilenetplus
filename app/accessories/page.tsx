@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Header from '../components/Header'
-import Footer from '../components/Footer'
-import Breadcrumb from '../components/Breadcrumb'
+import Header from '../../components/Header'
+import Footer from '../../components/Footer'
+import Breadcrumb from '../../components/Breadcrumb'
 import { categories, accessories, brands, type AccessoryItem } from '../data/accessories'
 import { TypeIcon as type, LucideIcon } from 'lucide-react'
 import * as Icons from 'lucide-react'

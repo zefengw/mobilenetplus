@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Header from '../components/Header'
-import Footer from '../components/Footer'
-import Breadcrumb from '../components/Breadcrumb'
+import Header from '../../components/Header'
+import Footer from '../../components/Footer'
+import Breadcrumb from '../../components/Breadcrumb'
 import { useRouter } from 'next/navigation'
-import { useTranslation } from '../contexts/TranslationContext'
+import { useTranslation } from '../../components/TranslationContext'
 
 interface InternetPlan {
   id: number

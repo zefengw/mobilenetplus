@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { mobilePlans, internetPlans, tvPlans, securityPlans } from '../data/plans'
+import { mobilePlans, internetPlans, tvPlans, securityPlans } from '../app/data/plans'
 
 export default function LimitedTimeOffers() {
   const router = useRouter()

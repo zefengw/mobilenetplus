@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import Header from '../components/Header'
-import Footer from '../components/Footer'
-import Breadcrumb from '../components/Breadcrumb'
-import { scrollToTop } from '../utils/scroll-to-top'
-import { useTranslation } from '../contexts/TranslationContext'
+import Header from '../../components/Header'
+import Footer from '../../components/Footer'
+import Breadcrumb from '../../components/Breadcrumb'
+import { scrollToTop } from '../../app/utils/scroll-to-top'
+import { useTranslation } from '../../components/TranslationContext'
 
 const SpinTheWheel = () => {
   const [spinning, setSpinning] = useState(false)

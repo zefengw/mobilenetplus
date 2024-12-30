@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Header from '../components/Header'
-import Footer from '../components/Footer'
-import Breadcrumb from '../components/Breadcrumb'
-import { scrollToTop } from '../utils/scroll-to-top'
-import { useTranslation } from '../contexts/TranslationContext'
-import type { MobilePlan } from '../types/plans'
+import Header from '../../components/Header'
+import Footer from '../../components/Footer'
+import Breadcrumb from '../../components/Breadcrumb'
+import { scrollToTop } from '../../app/utils/scroll-to-top'
+import { useTranslation } from '../../components/TranslationContext'
+import type { MobilePlan } from '../../app/types/plans'
 
 const MobilePlans = () => {
   const [plans, setPlans] = useState<MobilePlan[]>([])

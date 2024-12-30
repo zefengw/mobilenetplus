@@ -21,11 +21,13 @@ const config: Config = {
   				foreground: 'hsl(var(--popover-foreground))'
   			},
   			primary: {
-  				DEFAULT: 'hsl(var(--primary))',
+  				DEFAULT: '#3B82F6',
+  				dark: '#2563EB',
   				foreground: 'hsl(var(--primary-foreground))'
   			},
   			secondary: {
-  				DEFAULT: 'hsl(var(--secondary))',
+  				DEFAULT: '#10B981',
+  				dark: '#059669',
   				foreground: 'hsl(var(--secondary-foreground))'
   			},
   			muted: {
@@ -50,6 +52,9 @@ const config: Config = {
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
   			}
+  		},
+  		borderWidth: {
+  			'5': '5px',
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

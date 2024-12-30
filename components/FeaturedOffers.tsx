@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { accessories } from '../data/accessories'
+import { accessories } from '../app/data/accessories'
 import Link from 'next/link'
 
 const featuredAccessories = accessories.filter(item => item.featured)

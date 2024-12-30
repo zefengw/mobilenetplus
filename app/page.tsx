@@ -1,11 +1,11 @@
-import Header from '../components/Header'
-import Hero from '../components/Hero'
-import Footer from '../components/Footer'
-import LoadingScreen from '../components/LoadingScreen'
+import Header from '@/components/Header'
+import Hero from '@/components/Hero'
+import Footer from '@/components/Footer'
+import LoadingScreen from '@/components/LoadingScreen'
 import { Check, Wifi, Tv, Shield, Phone } from 'lucide-react'
 import Link from 'next/link'
-import FeaturedOffers from '../components/FeaturedOffers'
-import LimitedTimeOffers from '../components/LimitedTimeOffers'
+import FeaturedOffers from '@/components/FeaturedOffers'
+import LimitedTimeOffers from '@/components/LimitedTimeOffers'
 
 export default function Home() {
   return (
