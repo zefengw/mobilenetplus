@@ -65,60 +65,62 @@ The admin dashboard should include a sidebar with the following pages:
 # File Structure:
 MOBILENETPLUS/
 ├── .next/
-├── app/
-│   ├── accessories/
+├── app
+│   ├── accessories
 │   │   └── page.tsx
-│   ├── contact/
+│   ├── components
+│   │   └── ClientLayout.tsx
+│   ├── contact
 │   │   └── page.tsx
-│   ├── data/
-│   │   └── accessories.ts
+│   ├── data
+│   │   ├── accessories.ts
 │   │   └── plans.ts
-│   ├── fonts/
-│   ├── internet/
-│   │   └── page.tsx
-│   ├── login/
-│   │   └── page.tsx
-│   ├── mobile/
-│   │   └── page.tsx
-│   ├── security/
-│   │   └── page.tsx
-│   ├── spin-the-wheel/
-│   │   └── page.tsx
-│   ├── tv/
-│   │   └── page.tsx
-│   ├── types/
-│   │   └── types.ts
-│   ├── utils/
-│   │   └── scroll-utils.ts
-│   │   └── scroll-to-top.ts
-│   │   └── translations.ts
 │   ├── favicon.ico
+│   ├── fonts
+│   │   ├── GeistMonoVF.woff
+│   │   └── GeistVF.woff
 │   ├── globals.css
+│   ├── internet
+│   │   └── page.tsx
 │   ├── layout.tsx
-│   └── page.tsx
-├── components/
+│   ├── login
+│   │   └── page.tsx
+│   ├── mobile
+│   │   └── page.tsx
+│   ├── page.tsx
+│   ├── security
+│   │   └── page.tsx
+│   ├── spin-the-wheel
+│   │   └── page.tsx
+│   ├── tv
+│   │   └── page.tsx
+│   ├── types
+│   │   └── plans.ts
+│   └── utils
+│       ├── scroll-to-top.ts
+│       ├── scroll-utils.ts
+│       └── translations.ts
+├── components
+│   ├── Breadcrumb.tsx
 │   ├── FeaturedOffers.tsx
 │   ├── Footer.tsx
 │   ├── Header.tsx
+│   ├── Hero.tsx
 │   ├── LimitedTimeOffers.tsx
 │   ├── LoadingScreen.tsx
 │   ├── ScrollProgressBar.tsx
-│   └── Breadcrumbs.tsx
-│   └── Hero.tsx
 │   └── TranslationContext.tsx
-├── instructions/
-│   └── instructions.md
-├── lib/
-│   └── utils.ts
-├── .eslintrc.json
-├── .gitignore
 ├── components.json
+├── instructions
+│   └── instructions.md
+├── lib
+│   └── utils.ts
 ├── next-env.d.ts
 ├── next.config.mjs
 ├── package-lock.json
 ├── package.json
+├── postcss.config.js
 ├── postcss.config.mjs
-├── README.md
 ├── tailwind.config.js
 ├── tailwind.config.ts
 └── tsconfig.json

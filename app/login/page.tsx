@@ -2,20 +2,45 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Header from '../../components/Header'
-import Footer from '../../components/Footer'
-import Breadcrumb from '../../components/Breadcrumb'
+import { useAuth } from '../contexts/AuthContext'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
+import Breadcrumb from '@/components/Breadcrumb'
 import { Eye, EyeOff } from 'lucide-react'
+import { toast } from 'sonner'
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const { login, signup } = useAuth()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Add authentication logic here
-    router.push('/')
+    setLoading(true)
+
+    try {
+      if (isLogin) {
+        await login(email, password)
+        toast.success('Logged in successfully!')
+      } else {
+        if (password !== confirmPassword) {
+          toast.error('Passwords do not match!')
+          return
+        }
+        await signup(email, password)
+        toast.success('Account created successfully!')
+      }
+      router.push('/')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'An error occurred')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -30,12 +55,14 @@ export default function LoginPage() {
             </h1>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-                  Username
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
                 </label>
                 <input
-                  type="text"
-                  id="username"
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
@@ -48,6 +75,8 @@ export default function LoginPage() {
                   <input
                     type={showPassword ? "text" : "password"}
                     id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
@@ -69,6 +98,8 @@ export default function LoginPage() {
                     <input
                       type={showPassword ? "text" : "password"}
                       id="confirmPassword"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     />
@@ -77,9 +108,10 @@ export default function LoginPage() {
               )}
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
+                disabled={loading}
+                className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
               >
-                {isLogin ? 'Login' : 'Register'}
+                {loading ? 'Processing...' : isLogin ? 'Login' : 'Register'}
               </button>
             </form>
             <div className="mt-4 text-center">

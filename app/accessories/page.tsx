@@ -10,12 +10,12 @@ import { TypeIcon as type, LucideIcon } from 'lucide-react'
 import * as Icons from 'lucide-react'
 
 export default function AccessoriesPage() {
-  const [selectedCategory, setSelectedCategory] = useState('all')
+  const [selectedCategory, setSelectedCategory] = useState('all-brand')
   const [selectedBrand, setSelectedBrand] = useState('all')
   const router = useRouter()
 
   const filteredAccessories = accessories.filter(item => {
-    if (selectedCategory !== 'all' && item.category !== selectedCategory) return false
+    if (selectedCategory !== 'all-brand' && item.category !== selectedCategory) return false
     if (selectedBrand !== 'all' && item.brand.toLowerCase() !== selectedBrand) return false
     return true
   })
@@ -35,20 +35,17 @@ export default function AccessoriesPage() {
             <div className="bg-white rounded-lg shadow-md p-4">
               <h2 className="text-lg font-semibold mb-4">Categories</h2>
               <div className="space-y-2">
-                <button
-                  onClick={() => setSelectedCategory('all')}
-                  className={`w-full text-left px-3 py-2 rounded-md transition-colors ${
-                    selectedCategory === 'all' ? 'bg-primary text-white' : 'hover:bg-gray-100'
-                  }`}
-                >
-                  All Categories
-                </button>
                 {categories.map(category => {
                   const Icon = getIcon(category.icon)
                   return (
                     <button
                       key={category.id}
-                      onClick={() => setSelectedCategory(category.id)}
+                      onClick={() => {
+                        setSelectedCategory(category.id)
+                        if (category.id !== 'all-brand') {
+                          setSelectedBrand('all')
+                        }
+                      }}
                       className={`w-full text-left px-3 py-2 rounded-md transition-colors flex items-center gap-2 ${
                         selectedCategory === category.id ? 'bg-primary text-white' : 'hover:bg-gray-100'
                       }`}
@@ -64,27 +61,29 @@ export default function AccessoriesPage() {
 
           {/* Main Content */}
           <div className="flex-1">
-            {/* Brands */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
-              {brands.map(brand => (
-                <button
-                  key={brand.id}
-                  onClick={() => setSelectedBrand(brand.id)}
-                  className={`p-4 rounded-lg border transition-colors ${
-                    selectedBrand === brand.id
-                      ? 'border-primary bg-primary/5'
-                      : 'border-gray-200 hover:border-primary/50'
-                  }`}
-                >
-                  <img
-                    src={brand.logo}
-                    alt={brand.name}
-                    className="w-full h-20 object-contain mb-2"
-                  />
-                  <p className="text-sm text-center font-medium">{brand.name}</p>
-                </button>
-              ))}
-            </div>
+            {/* Brands - Only show when All Brand category is selected */}
+            {selectedCategory === 'all-brand' && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
+                {brands.map(brand => (
+                  <button
+                    key={brand.id}
+                    onClick={() => setSelectedBrand(brand.id)}
+                    className={`p-4 rounded-lg border transition-colors ${
+                      selectedBrand === brand.id
+                        ? 'border-primary bg-primary/5'
+                        : 'border-gray-200 hover:border-primary/50'
+                    }`}
+                  >
+                    <img
+                      src={brand.logo}
+                      alt={brand.name}
+                      className="w-full h-20 object-contain mb-2"
+                    />
+                    <p className="text-sm text-center font-medium">{brand.name}</p>
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* Products Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
