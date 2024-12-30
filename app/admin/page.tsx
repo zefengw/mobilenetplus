@@ -1,24 +1,29 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { db } from '@/app/config/firebase'
-import { collection, onSnapshot } from 'firebase/firestore'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-interface Stats {
-  users: number
-  products: {
-    mobile: number
-    internet: number
-    tv: number
-    security: number
-    accessories: number
-  }
+type CategoryStats = {
+  mobile: number
+  internet: number
+  tv: number
+  security: number
+  accessories: number
+}
+
+type Stats = {
+  totalProducts: number
+  activeProducts: number
+  deals: number
+  categories: CategoryStats
 }
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats>({
-    users: 0,
-    products: {
+    totalProducts: 0,
+    activeProducts: 0,
+    deals: 0,
+    categories: {
       mobile: 0,
       internet: 0,
       tv: 0,
@@ -28,54 +33,69 @@ export default function AdminDashboard() {
   })
 
   useEffect(() => {
-    // Subscribe to users collection
-    const unsubUsers = onSnapshot(collection(db, 'users'), (snapshot) => {
-      setStats(prev => ({ ...prev, users: snapshot.size }))
-    })
-
-    // Subscribe to each product category
-    const categories = ['mobile', 'internet', 'tv', 'security', 'accessories']
-    const unsubProducts = categories.map(category => 
-      onSnapshot(collection(db, 'products', category, 'items'), (snapshot) => {
-        setStats(prev => ({
-          ...prev,
-          products: {
-            ...prev.products,
-            [category]: snapshot.size
-          }
-        }))
-      })
-    )
-
-    return () => {
-      unsubUsers()
-      unsubProducts.forEach(unsub => unsub())
+    async function fetchStats() {
+      try {
+        const response = await fetch('/api/admin/stats')
+        if (!response.ok) {
+          throw new Error('Failed to fetch stats')
+        }
+        const data = await response.json()
+        setStats(data)
+      } catch (error) {
+        console.error('Error fetching stats:', error)
+      }
     }
+
+    fetchStats()
   }, [])
 
-  const statCards = [
-    { label: 'Total Users', value: stats.users },
-    { label: 'Mobile Plans', value: stats.products.mobile },
-    { label: 'Internet Plans', value: stats.products.internet },
-    { label: 'TV Plans', value: stats.products.tv },
-    { label: 'Security Plans', value: stats.products.security },
-    { label: 'Accessories', value: stats.products.accessories },
-  ]
-
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-8">Dashboard Overview</h1>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold">Dashboard Overview</h1>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {statCards.map((stat, index) => (
-          <div 
-            key={index}
-            className="bg-white p-6 rounded-lg shadow-md"
-          >
-            <h2 className="text-gray-500 text-sm font-medium">{stat.label}</h2>
-            <p className="text-3xl font-bold mt-2">{stat.value}</p>
-          </div>
-        ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Products</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalProducts}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active Products</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.activeProducts}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Current Deals</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.deals}</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="space-y-4">
+        <h2 className="text-xl font-bold">Products by Category</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {(Object.entries(stats.categories) as [keyof CategoryStats, number][]).map(([category, count]) => (
+            <Card key={category}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium capitalize">{category}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{count}</div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   )

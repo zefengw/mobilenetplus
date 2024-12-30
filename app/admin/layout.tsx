@@ -11,21 +11,23 @@ import {
   Tv, 
   Shield, 
   Package, 
-  Users, 
-  Settings, 
-  LogOut 
+  Users
 } from 'lucide-react'
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
-  const { user, isAdmin, logout } = useAuth()
+  const { user, isAdmin } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (!user || !isAdmin) {
+    // Redirect to login if not authenticated or not admin
+    if (!user) {
       router.push('/login')
+    } else if (!isAdmin) {
+      router.push('/')
     }
   }, [user, isAdmin, router])
 
+  // Don't render anything until we check authentication
   if (!user || !isAdmin) {
     return null
   }
@@ -37,23 +39,14 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     { icon: Tv, label: 'TV', href: '/admin/tv' },
     { icon: Shield, label: 'Security', href: '/admin/security' },
     { icon: Package, label: 'Accessories', href: '/admin/accessories' },
-    { icon: Users, label: 'Users', href: '/admin/users' },
-    { icon: Settings, label: 'Settings', href: '/admin/settings' },
+    { icon: Users, label: 'Users', href: '/admin/users' }
   ]
 
-  const handleLogout = async () => {
-    await logout()
-    router.push('/')
-  }
-
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-100 pt-14">
       {/* Sidebar */}
       <aside className="w-64 bg-white shadow-md">
-        <div className="p-4">
-          <h1 className="text-xl font-bold text-primary">Admin Dashboard</h1>
-        </div>
-        <nav className="mt-4">
+        <nav className="pt-8">
           <ul>
             {menuItems.map((item) => (
               <li key={item.href}>
@@ -66,21 +59,12 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
                 </Link>
               </li>
             ))}
-            <li>
-              <button
-                onClick={handleLogout}
-                className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
-              >
-                <LogOut className="w-5 h-5 mr-2" />
-                Logout
-              </button>
-            </li>
           </ul>
         </nav>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-8 overflow-auto">
+      <main className="flex-1 overflow-auto p-8">
         {children}
       </main>
     </div>

@@ -22,8 +22,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
-import { Plus, Pencil, Trash2 } from 'lucide-react'
+import { Plus, Pencil, Trash2, X } from 'lucide-react'
 import { toast } from 'sonner'
+import { Badge } from '../components/ui/badge'
+import { Checkbox } from '../components/ui/checkbox'
 
 interface ProductTableProps {
   products: Product[]
@@ -50,6 +52,7 @@ export function ProductTable({ products, category, onAdd, onUpdate, onDelete, en
     isDeal: false,
     active: true,
   })
+  const [showForm, setShowForm] = useState(false)
 
   const resetForm = () => {
     setFormData({
@@ -60,6 +63,7 @@ export function ProductTable({ products, category, onAdd, onUpdate, onDelete, en
       location: '',
       isDeal: false,
       active: true,
+      imageUrl: category === 'accessories' ? null : undefined
     })
     setEditingProduct(null)
   }
@@ -67,16 +71,22 @@ export function ProductTable({ products, category, onAdd, onUpdate, onDelete, en
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
+      const submitData = { ...formData }
+      if (category !== 'accessories') {
+        delete submitData.imageUrl
+      }
+
       if (editingProduct) {
-        await onUpdate(editingProduct.id, formData)
+        await onUpdate(editingProduct.id, submitData)
         toast.success('Product updated successfully')
       } else {
-        await onAdd(formData)
+        await onAdd(submitData)
         toast.success('Product added successfully')
       }
-      setIsAddDialogOpen(false)
+      setShowForm(false)
       resetForm()
     } catch (error) {
+      console.error('Error:', error)
       toast.error('An error occurred')
     }
   }
@@ -91,9 +101,9 @@ export function ProductTable({ products, category, onAdd, onUpdate, onDelete, en
       location: product.location,
       isDeal: product.isDeal,
       active: product.active,
-      imageUrl: 'imageUrl' in product ? product.imageUrl : undefined,
+      imageUrl: category === 'accessories' && 'imageUrl' in product ? product.imageUrl : null
     })
-    setIsAddDialogOpen(true)
+    setShowForm(true)
   }
 
   const handleDelete = async (id: string) => {
@@ -133,151 +143,240 @@ export function ProductTable({ products, category, onAdd, onUpdate, onDelete, en
     }
   }
 
+  const handleAddNew = () => {
+    resetForm()
+    setShowForm(true)
+  }
+
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold capitalize">{category} Products</h2>
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={resetForm}>
-              <Plus className="w-4 h-4 mr-2" />
-              Add Product
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {editingProduct ? 'Edit Product' : 'Add New Product'}
-              </DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="price">Price</Label>
-                <Input
-                  id="price"
-                  type="number"
-                  value={formData.price}
-                  onChange={e => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) }))}
-                  required
-                />
-              </div>
-              <div>
-                <Label>Features</Label>
-                {formData.features.map((feature, index) => (
-                  <div key={index} className="flex gap-2 mt-2">
-                    <Input
-                      value={feature}
-                      onChange={e => updateFeature(index, e.target.value)}
-                      placeholder={`Feature ${index + 1}`}
-                    />
-                  </div>
-                ))}
-                <Button type="button" variant="outline" size="sm" onClick={addFeatureField} className="mt-2">
-                  Add Feature
-                </Button>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="active"
-                  checked={formData.active}
-                  onCheckedChange={checked => setFormData(prev => ({ ...prev, active: checked }))}
-                />
-                <Label htmlFor="active">Active</Label>
-              </div>
-              {enableImageUpload && (
-                <div>
-                  <Label htmlFor="image">Product Image</Label>
-                  <Input
-                    id="image"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="mt-1"
-                  />
-                  {editingProduct && isAccessoryProduct(editingProduct) && editingProduct.imageUrl && (
-                    <img 
-                      src={editingProduct.imageUrl} 
-                      alt="Current product" 
-                      className="mt-2 w-32 h-32 object-cover rounded-md"
-                    />
-                  )}
-                </div>
-              )}
-              <Button type="submit" className="w-full">
-                {editingProduct ? 'Update' : 'Add'} Product
-              </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
+        <Button onClick={handleAddNew}>Add New Product</Button>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {enableImageUpload && <TableHead>Image</TableHead>}
-            <TableHead>Name</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {products.map((product) => (
-            <TableRow key={product.id}>
-              {enableImageUpload && isAccessoryProduct(product) && (
-                <TableCell>
-                  {product.imageUrl && (
-                    <img 
-                      src={product.imageUrl} 
-                      alt={product.name} 
-                      className="w-16 h-16 object-cover rounded-md"
-                    />
-                  )}
-                </TableCell>
-              )}
-              <TableCell>{product.name}</TableCell>
-              <TableCell>{product.description}</TableCell>
-              <TableCell>${product.price}</TableCell>
-              <TableCell>
-                <span className={`px-2 py-1 rounded-full text-sm ${
-                  product.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                }`}>
-                  {product.active ? 'Active' : 'Inactive'}
-                </span>
-              </TableCell>
-              <TableCell>
-                <div className="flex space-x-2">
-                  <Button variant="outline" size="icon" onClick={() => handleEdit(product)}>
-                    <Pencil className="w-4 h-4" />
-                  </Button>
-                  <Button variant="destructive" size="icon" onClick={() => handleDelete(product.id)}>
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+      {/* Product Form Modal */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-semibold">
+                {editingProduct ? 'Edit Product' : 'Add New Product'}
+              </h3>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  setShowForm(false)
+                  setEditingProduct(null)
+                }}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="name">Name</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full"
+                    required
+                  />
                 </div>
-              </TableCell>
+
+                <div>
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    className="w-full min-h-[100px]"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="price">Price</Label>
+                  <Input
+                    id="price"
+                    type="number"
+                    value={formData.price === 0 ? '' : formData.price}
+                    onChange={(e) => {
+                      const value = e.target.value === '' ? 0 : parseFloat(e.target.value)
+                      setFormData({ ...formData, price: value })
+                    }}
+                    className="w-full"
+                    required
+                    min="0"
+                    step="0.01"
+                    placeholder="Enter price"
+                  />
+                </div>
+
+                <div>
+                  <Label>Features</Label>
+                  <div className="space-y-2">
+                    {formData.features.map((feature, index) => (
+                      <div key={index} className="flex gap-2">
+                        <Input
+                          value={feature}
+                          onChange={(e) => {
+                            const newFeatures = [...formData.features]
+                            newFeatures[index] = e.target.value
+                            setFormData({ ...formData, features: newFeatures })
+                          }}
+                          className="flex-1"
+                          placeholder={`Feature ${index + 1}`}
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          onClick={() => {
+                            const newFeatures = formData.features.filter((_, i) => i !== index)
+                            setFormData({ ...formData, features: newFeatures })
+                          }}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setFormData({
+                        ...formData,
+                        features: [...formData.features, '']
+                      })}
+                      className="w-full"
+                    >
+                      Add Feature
+                    </Button>
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="location">Location</Label>
+                  <Input
+                    id="location"
+                    value={formData.location}
+                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    className="w-full"
+                    required
+                  />
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="isDeal"
+                    checked={formData.isDeal}
+                    onCheckedChange={(checked: boolean) => 
+                      setFormData({ ...formData, isDeal: checked })
+                    }
+                  />
+                  <Label htmlFor="isDeal">Is Deal</Label>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="active"
+                    checked={formData.active}
+                    onCheckedChange={(checked: boolean) => 
+                      setFormData({ ...formData, active: checked })
+                    }
+                  />
+                  <Label htmlFor="active">Active</Label>
+                </div>
+
+                {category === 'accessories' && (
+                  <div>
+                    <Label htmlFor="imageUrl">Image URL</Label>
+                    <Input
+                      id="imageUrl"
+                      value={formData.imageUrl || ''}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        imageUrl: e.target.value || null
+                      })}
+                      className="w-full"
+                      placeholder="Enter image URL"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end space-x-2 pt-4 border-t">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setShowForm(false)
+                    setEditingProduct(null)
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit">
+                  {editingProduct ? 'Update' : 'Add'} Product
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Products Table */}
+      <div className="bg-white rounded-lg shadow">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Price</TableHead>
+              <TableHead>Location</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {products.map((product) => (
+              <TableRow key={product.id}>
+                <TableCell>{product.name}</TableCell>
+                <TableCell className="max-w-xs truncate">{product.description}</TableCell>
+                <TableCell>${product.price}</TableCell>
+                <TableCell>{product.location}</TableCell>
+                <TableCell>
+                  <Badge variant={product.active ? "success" : "secondary"}>
+                    {product.active ? "Active" : "Inactive"}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleEdit(product)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      onClick={() => handleDelete(product.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   )
 } 

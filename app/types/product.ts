@@ -53,6 +53,6 @@ export interface ProductFormData {
   data?: string;
   speed?: string;
   channels?: string;
-  imageUrl?: string;
+  imageUrl?: string | null;
   imageFile?: File;
 } 

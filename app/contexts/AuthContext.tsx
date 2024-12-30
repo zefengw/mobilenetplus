@@ -1,64 +1,115 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { 
-  User,
+import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
+  User
 } from 'firebase/auth'
-import { auth } from '../config/firebase'
+import { auth, db } from '@/app/config/firebase-client'
+import { doc, setDoc, getDoc, Firestore } from 'firebase/firestore'
 
-interface AuthContextType {
+export interface AuthContextType {
   user: User | null
-  loading: boolean
-  signup: (email: string, password: string) => Promise<void>
-  login: (email: string, password: string) => Promise<void>
-  logout: () => Promise<void>
   isAdmin: boolean
+  signUp: (email: string, password: string) => Promise<void>
+  signIn: (email: string, password: string) => Promise<void>
+  signOut: () => Promise<void>
 }
 
-const AuthContext = createContext<AuthContextType>({} as AuthContextType)
+export const AuthContext = createContext<AuthContextType>({
+  user: null,
+  isAdmin: false,
+  signUp: async () => {},
+  signIn: async () => {},
+  signOut: async () => {}
+})
+
+export function useAuth() {
+  return useContext(AuthContext)
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    if (!auth || !db) return
+
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      console.log('Auth state changed:', user?.email)
       setUser(user)
-      // Here you would check if user has admin role
-      // For now, we'll set it based on a specific email
-      setIsAdmin(user?.email === 'admin@mobilenetplus.com')
+      if (user) {
+        const userDoc = await getDoc(doc(db as Firestore, 'users', user.uid))
+        const userData = userDoc.data()
+        console.log('User data:', userData)
+        setIsAdmin(userData?.isAdmin || false)
+        console.log('Is admin:', userData?.isAdmin)
+      } else {
+        setIsAdmin(false)
+      }
       setLoading(false)
     })
 
     return unsubscribe
   }, [])
 
-  const signup = async (email: string, password: string) => {
+  async function signup(email: string, password: string) {
+    if (!auth || !db) throw new Error('Firebase not initialized')
+
     const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-    // User is automatically logged in after signup because Firebase handles this
-    setUser(userCredential.user)
+    const user = userCredential.user
+    
+    // Store user data in Firestore
+    const isDefaultAdmin = email === 'admin@mobilenetplus.com'
+    await setDoc(doc(db as Firestore, 'users', user.uid), {
+      email: user.email,
+      isAdmin: isDefaultAdmin,
+      createdAt: new Date()
+    })
+    
+    setUser(user)
+    setIsAdmin(isDefaultAdmin)
   }
 
-  const login = async (email: string, password: string) => {
+  async function login(email: string, password: string) {
+    if (!auth || !db) throw new Error('Firebase not initialized')
+
     const userCredential = await signInWithEmailAndPassword(auth, email, password)
-    setUser(userCredential.user)
+    const user = userCredential.user
+    const userDoc = await getDoc(doc(db as Firestore, 'users', user.uid))
+    const userData = userDoc.data()
+    console.log('Login - User data:', userData)
+    const adminStatus = userData?.isAdmin || false
+    console.log('Login - Setting admin status:', adminStatus)
+    setIsAdmin(adminStatus)
+    setUser(user)
   }
 
-  const logout = async () => {
+  async function logout() {
+    if (!auth) throw new Error('Firebase not initialized')
+
     await signOut(auth)
     setUser(null)
+    setIsAdmin(false)
   }
 
+  const value = {
+    user,
+    isAdmin,
+    signUp: signup,
+    signIn: login,
+    signOut: logout
+  }
+
+  console.log('AuthContext value:', { email: user?.email, isAdmin })
+
   return (
-    <AuthContext.Provider value={{ user, loading, signup, login, logout, isAdmin }}>
+    <AuthContext.Provider value={value}>
       {!loading && children}
     </AuthContext.Provider>
   )
-}
-
-export const useAuth = () => useContext(AuthContext) 
+} 
