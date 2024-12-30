@@ -26,11 +26,13 @@ Use this guide to build a web app where users can view Mobile, Internet, TV, Sec
 - Implement Firebase authentication for login/signup
 - Store all user data in Firebase
 - Utilize existing login and signup pages
+- 2.1: After the user registers, they should be automatically logged in
+- 2.2: After the user is logged in, the button that takes the user to the login page should be changed to a dropdown menu that displays the options of Admin Dashboard (depending on if the user is an admin or not) and Logout. The styles should be consistent with the rest of the app.
 
 ## 3. Admin Dashboard Implementation
-- Create new admin dashboard
+- Create new admin dashboard (Can be done through Firebase if possible)
 - Implement role-based access control for selected users
-- Enable CRUD operations for products via admin dashboard
+- Enable CRUD operations for all products (Mobile, Internet, TV, Security, Accessories) via admin dashboard
 
 ### 3.1 Admin Dashboard Navigation
 The admin dashboard should include a sidebar with the following pages:
