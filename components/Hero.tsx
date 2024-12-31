@@ -27,7 +27,7 @@ const Hero = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="text-white space-y-6">
             <h1 className="text-5xl font-bold leading-tight">
-              Transform Your Connected Life
+              One Provider, Endless Possibilities
             </h1>
             <p className="text-xl opacity-90">
               Experience seamless connectivity with our comprehensive suite of services - 
