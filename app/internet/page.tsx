@@ -64,7 +64,6 @@ export default function InternetPage() {
                 <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
                 <p className="text-2xl font-bold text-blue-600 mb-4">${product.price}/month</p>
                 <p className="mb-2">Location: {product.location}</p>
-                <p className="mb-2">Speed: {product.speed}</p>
                 <p className="mb-2">Features: {product.features.join(', ')}</p>
                 <p className="mb-4">{product.description}</p>
               </div>
