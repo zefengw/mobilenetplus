@@ -47,6 +47,8 @@ The admin dashboard should include a sidebar with the following pages:
 | **Accessories** | Table view of accessories with CRUD operations |
 | **Users** | Table view of users with CRUD operations |
 
+# To be added in the future 4, 5, and 6: 
+
 ## 4. Translation Feature Enhancement
 - Expand existing navbar translation functionality
 - Implement translation across all pages
@@ -57,8 +59,11 @@ The admin dashboard should include a sidebar with the following pages:
   - Service plan creation
   - Service plan updates
   - Service plan deletion
-- Ensure automatic translation updates following database changes
+- Ensure automatic translation updates following changes to the database
 - Apply same real-time updates for accessories
+
+## 6. Spin the Wheel Feature
+- Add a feature where the user can spin the wheel and get a random discount on a product of their choice.
 
 
 

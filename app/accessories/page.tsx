@@ -2,30 +2,22 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Header from '../../components/Header'
-import Footer from '../../components/Footer'
-import Breadcrumb from '../../components/Breadcrumb'
-import { 
-  Smartphone, 
-  Tablet, 
-  Laptop, 
-  Headphones, 
-  Watch, 
-  Package,
-  LucideIcon 
-} from 'lucide-react'
 import { db } from '@/app/config/firebase-client'
-import { collection, query, where, getDocs } from 'firebase/firestore'
-import { AccessoryProduct } from '../types/product'
+import { collection, query, where, getDocs, orderBy, Firestore } from 'firebase/firestore'
+import { AccessoryProduct } from '@/app/types/product'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
+import Breadcrumb from '@/components/Breadcrumb'
+import { Package } from 'lucide-react'
 
 const categories = [
-  { id: 'all-brand', name: 'All Brand', Icon: Smartphone },
-  { id: 'phones', name: 'Phones', Icon: Smartphone },
-  { id: 'tablets', name: 'Tablets', Icon: Tablet },
-  { id: 'laptops', name: 'Laptops', Icon: Laptop },
-  { id: 'wireless', name: 'Wireless', Icon: Headphones },
-  { id: 'wearables', name: 'Wearables', Icon: Watch },
-  { id: 'miscellaneous', name: 'Miscellaneous', Icon: Package }
+  { id: 'all-brand', name: 'All Brand' },
+  { id: 'phones', name: 'Phones' },
+  { id: 'tablets', name: 'Tablets' },
+  { id: 'laptops', name: 'Laptops' },
+  { id: 'wireless', name: 'Wireless' },
+  { id: 'wearables', name: 'Wearables' },
+  { id: 'miscellaneous', name: 'Miscellaneous' }
 ]
 
 export default function AccessoriesPage() {
@@ -39,11 +31,20 @@ export default function AccessoriesPage() {
 
   useEffect(() => {
     async function fetchAccessories() {
+      if (!db) {
+        console.error('Firestore is not initialized')
+        return
+      }
+
       setLoading(true)
       setError(null)
       try {
-        const accessoriesRef = collection(db, 'products', 'accessories', 'items')
-        const q = query(accessoriesRef, where('active', '==', true))
+        const accessoriesRef = collection(db as Firestore, 'products', 'accessories', 'items')
+        const q = query(
+          accessoriesRef,
+          where('active', '==', true),
+          orderBy('price', 'asc')
+        )
         const querySnapshot = await getDocs(q)
         
         const items = querySnapshot.docs.map(doc => {
@@ -60,12 +61,16 @@ export default function AccessoriesPage() {
         
         setAccessories(items)
         
-        // Extract unique brands from products
+        // Extract unique brands from active products
         const brands = new Set(items.filter(item => item.brand).map(item => item.brand))
         setAvailableBrands(brands)
       } catch (error) {
-        console.error('Error fetching accessories:', error)
-        setError('Failed to load accessories. Please try again later.')
+        if (error instanceof Error && error.message.includes('requires an index')) {
+          console.error('Please create the following index in Firebase Console:', error.message)
+        } else {
+          console.error('Error fetching accessories:', error)
+          setError('Failed to load accessories. Please try again later.')
+        }
       } finally {
         setLoading(false)
       }
@@ -73,6 +78,12 @@ export default function AccessoriesPage() {
 
     fetchAccessories()
   }, [])
+
+  const filteredAccessories = accessories.filter(item => {
+    if (selectedCategory !== 'all-brand' && item.subcategory !== selectedCategory) return false
+    if (selectedBrand !== 'all' && item.brand?.toLowerCase() !== selectedBrand) return false
+    return true
+  })
 
   // Show loading state
   if (loading) {
@@ -115,12 +126,6 @@ export default function AccessoriesPage() {
     )
   }
 
-  const filteredAccessories = accessories.filter(item => {
-    if (selectedCategory !== 'all-brand' && item.subcategory !== selectedCategory) return false
-    if (selectedBrand !== 'all' && item.brand?.toLowerCase() !== selectedBrand) return false
-    return true
-  })
-
   return (
     <div className="min-h-[calc(100vh+400px)] flex flex-col">
       <Header />
@@ -133,7 +138,6 @@ export default function AccessoriesPage() {
               <h2 className="text-lg font-semibold mb-4">Categories</h2>
               <div className="space-y-2">
                 {categories.map(category => {
-                  const IconComponent = category.Icon
                   return (
                     <button
                       key={category.id}
@@ -147,7 +151,6 @@ export default function AccessoriesPage() {
                         selectedCategory === category.id ? 'bg-primary text-white' : 'hover:bg-gray-100'
                       }`}
                     >
-                      <IconComponent className="w-4 h-4" />
                       {category.name}
                     </button>
                   )

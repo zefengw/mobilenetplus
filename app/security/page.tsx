@@ -1,16 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { db } from '@/app/config/firebase-client'
+import { collection, query, where, getDocs, orderBy, Firestore } from 'firebase/firestore'
+import { Product } from '@/app/types/product'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Breadcrumb from '@/components/Breadcrumb'
 import { useRouter } from 'next/navigation'
-import { db } from '@/app/config/firebase-client'
-import { collection, query, where, getDocs, orderBy, Firestore } from 'firebase/firestore'
-import { SecurityProduct } from '@/app/types/product'
 
 export default function SecurityPage() {
-  const [products, setProducts] = useState<SecurityProduct[]>([])
+  const [products, setProducts] = useState<Product[]>([])
   const router = useRouter()
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function SecurityPage() {
         const fetchedProducts = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
-        })) as SecurityProduct[]
+        })) as Product[]
         setProducts(fetchedProducts)
       } catch (error) {
         if (error instanceof Error && error.message.includes('requires an index')) {

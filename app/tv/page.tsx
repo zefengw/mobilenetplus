@@ -3,15 +3,14 @@
 import { useEffect, useState } from 'react'
 import { db } from '@/app/config/firebase-client'
 import { collection, query, where, getDocs, orderBy, Firestore } from 'firebase/firestore'
-import { TVProduct } from '@/app/types/product'
-import { Card, CardContent } from '@/components/ui/card'
+import { Product } from '@/app/types/product'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Breadcrumb from '@/components/Breadcrumb'
 import { useRouter } from 'next/navigation'
 
 export default function TVPage() {
-  const [products, setProducts] = useState<TVProduct[]>([])
+  const [products, setProducts] = useState<Product[]>([])
   const router = useRouter()
 
   useEffect(() => {
@@ -32,7 +31,7 @@ export default function TVPage() {
         const fetchedProducts = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
-        })) as TVProduct[]
+        })) as Product[]
         setProducts(fetchedProducts)
       } catch (error) {
         if (error instanceof Error && error.message.includes('requires an index')) {

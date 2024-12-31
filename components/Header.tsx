@@ -14,7 +14,7 @@ const Header = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const router = useRouter()
   const { language, setLanguage, t } = useTranslation()
-  const { user, isAdmin, logout } = useAuth()
+  const { user, isAdmin, signOut, signIn } = useAuth()
 
   const handleLanguageChange = (lang: string) => {
     setLanguage(lang as Language)
@@ -22,8 +22,18 @@ const Header = () => {
   }
 
   const handleLogout = async () => {
-    await logout()
+    await signOut()
     router.push('/')
+  }
+
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      await signIn(email, password)
+      router.push('/')
+    } catch (error) {
+      console.error('Login error:', error)
+      // Handle error appropriately
+    }
   }
 
   return (
@@ -38,8 +48,10 @@ const Header = () => {
           <Link href="/accessories" className="text-gray-600 hover:text-primary">Accessories</Link>
           <Link href="/contact" className="text-gray-600 hover:text-primary">{t('nav.contact')}</Link>
         </div>
+        
         <div className="flex items-center space-x-4">
-          <div className="relative">
+          {/* TODO: Add language dropdown */}
+          {/* <div className="relative">
             <button 
               className="flex items-center text-gray-600 hover:text-primary"
               onClick={() => setIsOpen(!isOpen)}
@@ -62,10 +74,11 @@ const Header = () => {
                 </li>
               ))}
             </ul>
-          </div>
-          <div className="text-gray-400 p-2 cursor-not-allowed">
+          </div> */}
+          {/* TODO: Add Spin the Wheel */}
+          {/* <div className="text-gray-400 p-2 cursor-not-allowed">
             <Circle className="w-6 h-6" />
-          </div>
+          </div> */}
           <div className="relative">
             {user ? (
               <>
@@ -97,7 +110,7 @@ const Header = () => {
                   <li>
                     <button 
                       className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
-                      onClick={handleLogout}
+                      onClick={signOut}
                     >
                       <LogOut className="w-4 h-4 mr-2" />
                       Logout

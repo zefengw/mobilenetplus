@@ -17,7 +17,7 @@ export default function LoginPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const { login, signup } = useAuth()
+  const { signIn } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -25,7 +25,7 @@ export default function LoginPage() {
 
     try {
       if (isLogin) {
-        await login(email, password)
+        await signIn(email, password)
         toast.success('Logged in successfully!')
       } else {
         if (password !== confirmPassword) {
