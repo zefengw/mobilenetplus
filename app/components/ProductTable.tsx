@@ -72,9 +72,15 @@ export function ProductTable({ products, category, onAdd, onUpdate, onDelete, en
     e.preventDefault()
     try {
       const submitData = { ...formData }
-      if (category !== 'accessories') {
-        delete submitData.imageUrl
+      
+      // Ensure the Base64 image is properly formatted
+      if (submitData.imageUrl && !submitData.imageUrl.startsWith('data:image')) {
+        toast.error('Invalid image format')
+        return
       }
+
+      // Log the data being sent to Firebase
+      console.log('Submitting data:', submitData)
 
       if (editingProduct) {
         await onUpdate(editingProduct.id, submitData)
@@ -133,13 +139,26 @@ export function ProductTable({ products, category, onAdd, onUpdate, onDelete, en
     }))
   }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      setFormData(prev => ({
-        ...prev,
-        imageFile: file
-      }))
+      // Add size check
+      if (file.size > 800 * 1024) { // 800KB limit
+        toast.error('Image size should be less than 800KB')
+        return
+      }
+
+      // Convert image to Base64
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        const base64String = reader.result as string
+        console.log('Base64 image generated:', base64String.substring(0, 50) + '...')
+        setFormData(prev => ({
+          ...prev,
+          imageUrl: base64String
+        }))
+      }
+      reader.readAsDataURL(file)
     }
   }
 
@@ -293,18 +312,60 @@ export function ProductTable({ products, category, onAdd, onUpdate, onDelete, en
                 </div>
 
                 {category === 'accessories' && (
-                  <div>
-                    <Label htmlFor="imageUrl">Image URL</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="image">Product Image</Label>
                     <Input
-                      id="imageUrl"
-                      value={formData.imageUrl || ''}
-                      onChange={(e) => setFormData({ 
-                        ...formData, 
-                        imageUrl: e.target.value || null
-                      })}
+                      id="image"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
                       className="w-full"
-                      placeholder="Enter image URL"
                     />
+                    {formData.imageUrl && (
+                      <div className="mt-2">
+                        <img
+                          src={formData.imageUrl}
+                          alt="Preview"
+                          className="w-32 h-32 object-cover rounded"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Add brand input field for accessories */}
+                {category === 'accessories' && (
+                  <div className="space-y-2">
+                    <Label htmlFor="brand">Brand</Label>
+                    <Input
+                      id="brand"
+                      name="brand"
+                      value={formData.brand || ''}
+                      onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
+                      placeholder="Enter brand name"
+                    />
+                  </div>
+                )}
+
+                {/* Add subcategory input field for accessories */}
+                {category === 'accessories' && (
+                  <div className="space-y-2">
+                    <Label htmlFor="subcategory">Category</Label>
+                    <select
+                      id="subcategory"
+                      name="subcategory"
+                      value={formData.subcategory || ''}
+                      onChange={(e) => setFormData({ ...formData, subcategory: e.target.value })}
+                      className="w-full p-2 border rounded-md"
+                    >
+                      <option value="">Select a category</option>
+                      <option value="phones">Phones</option>
+                      <option value="tablets">Tablets</option>
+                      <option value="laptops">Laptops</option>
+                      <option value="wireless">Wireless</option>
+                      <option value="wearables">Wearables</option>
+                      <option value="miscellaneous">Miscellaneous</option>
+                    </select>
                   </div>
                 )}
               </div>

@@ -7,6 +7,7 @@ export interface BaseProduct {
   location: string;
   isDeal: boolean;
   active: boolean;
+  imageUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -32,7 +33,9 @@ export interface SecurityProduct extends BaseProduct {
 
 export interface AccessoryProduct extends BaseProduct {
   category: 'accessories';
+  subcategory: string;
   imageUrl: string;
+  brand: string;
 }
 
 export type Product = 
@@ -55,4 +58,6 @@ export interface ProductFormData {
   channels?: string;
   imageUrl?: string | null;
   imageFile?: File;
+  brand?: string;
+  subcategory?: string;
 } 

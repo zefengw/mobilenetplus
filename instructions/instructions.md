@@ -46,8 +46,6 @@ The admin dashboard should include a sidebar with the following pages:
 | **Security** | Table view of security products with CRUD operations |
 | **Accessories** | Table view of accessories with CRUD operations |
 | **Users** | Table view of users with CRUD operations |
-| **Settings** | - User management (add/edit/delete) <br> - Admin access control (grant/revoke) |
-| **Logout** | Log out functionality with redirect to login page |
 
 ## 4. Translation Feature Enhancement
 - Expand existing navbar translation functionality
@@ -67,13 +65,52 @@ The admin dashboard should include a sidebar with the following pages:
 # File Structure:
 MOBILENETPLUS/
 ├── .next/
+├── README.md
 ├── app
 │   ├── accessories
 │   │   └── page.tsx
+│   ├── admin
+│   │   ├── accessories
+│   │   │   └── page.tsx
+│   │   ├── internet
+│   │   │   └── page.tsx
+│   │   ├── layout.tsx
+│   │   ├── mobile
+│   │   │   └── page.tsx
+│   │   ├── page.tsx
+│   │   ├── security
+│   │   │   └── page.tsx
+│   │   ├── tv
+│   │   │   └── page.tsx
+│   │   └── users
+│   │       └── page.tsx
+│   ├── api
+│   │   └── admin
+│   │       ├── stats
+│   │       │   └── route.ts
+│   │       └── users
+│   │           ├── route.ts
+│   │           └── toggle-admin
+│   │               └── route.ts
 │   ├── components
-│   │   └── ClientLayout.tsx
+│   │   ├── ClientLayout.tsx
+│   │   ├── Header.tsx
+│   │   ├── ProductTable.tsx
+│   │   └── ui
+│   │       ├── badge.tsx
+│   │       ├── button.tsx
+│   │       ├── card.tsx
+│   │       ├── checkbox.tsx
+│   │       ├── dropdown-menu.tsx
+│   │       └── switch.tsx
+│   ├── config
+│   │   ├── firebase-admin.ts
+│   │   ├── firebase-client.ts
+│   │   └── firebase.ts
 │   ├── contact
 │   │   └── page.tsx
+│   ├── contexts
+│   │   └── AuthContext.tsx
 │   ├── data
 │   │   ├── accessories.ts
 │   │   └── plans.ts
@@ -85,6 +122,11 @@ MOBILENETPLUS/
 │   ├── internet
 │   │   └── page.tsx
 │   ├── layout.tsx
+│   ├── lib
+│   │   ├── firebase-admin.ts
+│   │   ├── firebase-utils.ts
+│   │   ├── seed-data.ts
+│   │   └── utils.ts
 │   ├── login
 │   │   └── page.tsx
 │   ├── mobile
@@ -97,7 +139,8 @@ MOBILENETPLUS/
 │   ├── tv
 │   │   └── page.tsx
 │   ├── types
-│   │   └── plans.ts
+│   │   ├── plans.ts
+│   │   └── product.ts
 │   └── utils
 │       ├── scroll-to-top.ts
 │       ├── scroll-utils.ts
@@ -111,18 +154,34 @@ MOBILENETPLUS/
 │   ├── LimitedTimeOffers.tsx
 │   ├── LoadingScreen.tsx
 │   ├── ScrollProgressBar.tsx
-│   └── TranslationContext.tsx
+│   ├── TranslationContext.tsx
+│   └── ui
+│       ├── button.tsx
+│       ├── card.tsx
+│       ├── dialog.tsx
+│       ├── input.tsx
+│       ├── label.tsx
+│       ├── switch.tsx
+│       ├── table.tsx
+│       └── textarea.tsx
 ├── components.json
+├── firebase.json
+├── firestore.indexes.json
+├── firestore.rules
 ├── instructions
 │   └── instructions.md
 ├── lib
 │   └── utils.ts
 ├── next-env.d.ts
+├── next.config.js
 ├── next.config.mjs
 ├── package-lock.json
 ├── package.json
 ├── postcss.config.js
 ├── postcss.config.mjs
+├── scripts
+│   ├── seed-db.ts
+│   └── set-admin.ts
 ├── tailwind.config.js
 ├── tailwind.config.ts
 └── tsconfig.json
