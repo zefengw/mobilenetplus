@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image'
 
 import { useEffect, useState } from 'react'
 
@@ -18,8 +19,13 @@ export default function LoadingScreen() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
       <div className="w-32 h-32 flex items-center justify-center">
-        {/* Replace with actual logo */}
-        <div className="text-2xl font-bold text-blue-600">Logo</div>
+            <Image
+                src="/img/logo.png"
+                alt="MobileNet Plus"
+                width={180}
+                height={60}
+                className="object-contain"
+              />
       </div>
     </div>
   )

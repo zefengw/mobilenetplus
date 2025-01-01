@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { ChevronDown, Circle, User, LogOut, LayoutDashboard } from 'lucide-react'
 import { useTranslation } from './TranslationContext'
@@ -40,7 +41,13 @@ const Header = () => {
     <header className="fixed top-0 left-0 right-0 bg-white shadow-md z-40">
       <nav className="container mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex items-center space-x-6">
-          <Link href="/" className="text-xl font-bold text-primary">{t('nav.home')}</Link>
+          <Link href="/" className="text-xl font-bold text-primary"><Image
+                src="/img/logo.png"
+                alt="MobileNet Plus"
+                width={80}
+                height={60}
+                className="object-contain"
+              /></Link>
           <Link href="/mobile" className="text-gray-600 hover:text-primary">{t('nav.mobile')}</Link>
           <Link href="/internet" className="text-gray-600 hover:text-primary">{t('nav.internet')}</Link>
           <Link href="/tv" className="text-gray-600 hover:text-primary">{t('nav.tv')}</Link>

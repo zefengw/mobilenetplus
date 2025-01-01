@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import Image from 'next/image'
+
 import { useAuth } from '@/app/contexts/AuthContext'
 import {
   DropdownMenu,

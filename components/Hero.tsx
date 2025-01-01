@@ -2,8 +2,15 @@
 
 import { useEffect, useState } from 'react'
 import { ArrowRight } from 'lucide-react'
+import dynamic from 'next/dynamic'
 
-const Hero = () => {
+// Import Scene with no SSR
+const Scene = dynamic(() => import('./3D/Scene'), {
+  ssr: false,
+  loading: () => <div className="w-full h-full bg-gray-100 rounded-2xl animate-pulse" />
+})
+
+export default function Hero() {
   const [scrollY, setScrollY] = useState(0)
 
   useEffect(() => {
@@ -38,15 +45,14 @@ const Hero = () => {
               <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
-          <div className="hidden lg:block">
-            {/* Space for visuals */}
-            <div className="w-full h-[600px] bg-white/10 rounded-2xl" />
+          <div className="hidden lg:block h-[600px] relative">
+            <div className="w-full h-full rounded-2xl overflow-hidden">
+              <Scene />
+            </div>
           </div>
         </div>
       </div>
     </div>
   )
 }
-
-export default Hero
 

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 const Footer = () => {
   return (
@@ -6,8 +7,15 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap justify-between items-start">
           <div className="w-full md:w-1/4 mb-8 md:mb-0">
-            {/* Placeholder for logo */}
-            <div className="w-48 h-16 bg-gray-300 mb-4"></div>
+            <div className="mb-4">
+              <Image
+                src="/img/logo.png"
+                alt="MobileNet Plus"
+                width={180}
+                height={60}
+                className="object-contain"
+              />
+            </div>
             <p className="text-sm text-gray-600">Your one-stop solution for all your telecommunication needs</p>
           </div>
           <div className="w-full md:w-1/4 mb-8 md:mb-0">

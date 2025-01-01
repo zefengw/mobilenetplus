@@ -2,7 +2,6 @@
 const nextConfig = {
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      // Don't attempt to load these server-only modules on the client
       config.resolve.fallback = {
         ...config.resolve.fallback,
         net: false,
@@ -14,8 +13,20 @@ const nextConfig = {
         child_process: false,
       }
     }
+    
+    // Add rules for Three.js and GLB files
+    config.module.rules.push({
+      test: /\.(glb|gltf)$/,
+      type: 'asset/resource'
+    })
+    config.module.rules.push({
+      test: /react-three-fiber|three/,
+      sideEffects: false
+    })
+
     return config
   },
+  transpilePackages: ['three', '@react-three/fiber', '@react-three/drei']
 }
 
 module.exports = nextConfig 
