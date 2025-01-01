@@ -65,6 +65,8 @@ The admin dashboard should include a sidebar with the following pages:
 ## 6. Spin the Wheel Feature
 - Add a feature where the user can spin the wheel and get a random discount on a product of their choice.
 
+<!-- I want to have this website be hosted on Firebase. Can you refactor all of the code to implement best practices? Can you also remove any code that isn't being used such as test files, scripts, etc. Also, ignore the instructions.md file. Can you set that up for me? -->
+
 # Documentation
 
 "use client";

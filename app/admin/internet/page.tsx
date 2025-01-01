@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { ProductTable } from '@/app/components/ProductTable'
 import { Product, ProductFormData } from '@/app/types/product'
-import { db } from '@/app/config/firebase'
+import { db } from '@/app/config/firebase-client'
 import { 
   collection, 
   addDoc, 
@@ -35,8 +35,21 @@ export default function InternetProductsPage() {
   }, [])
 
   const handleAdd = async (data: ProductFormData) => {
+    // Remove undefined fields and imageUrl if it's not set
+    const cleanData = Object.entries(data).reduce((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {} as Record<string, any>);
+
+    // Remove imageUrl if it's null or undefined
+    if ('imageUrl' in cleanData && !cleanData.imageUrl) {
+      delete cleanData.imageUrl;
+    }
+
     await addDoc(collection(db, 'products', 'internet', 'items'), {
-      ...data,
+      ...cleanData,
       category: 'internet',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
@@ -44,8 +57,21 @@ export default function InternetProductsPage() {
   }
 
   const handleUpdate = async (id: string, data: ProductFormData) => {
+    // Clean the data before update
+    const cleanData = Object.entries(data).reduce((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {} as Record<string, any>);
+
+    // Remove imageUrl if it's null or undefined
+    if ('imageUrl' in cleanData && !cleanData.imageUrl) {
+      delete cleanData.imageUrl;
+    }
+
     await updateDoc(doc(db, 'products', 'internet', 'items', id), {
-      ...data,
+      ...cleanData,
       updatedAt: serverTimestamp(),
     })
   }
@@ -55,12 +81,14 @@ export default function InternetProductsPage() {
   }
 
   return (
-    <ProductTable
-      products={products}
-      category="internet"
-      onAdd={handleAdd}
-      onUpdate={handleUpdate}
-      onDelete={handleDelete}
-    />
+    <div className="p-6">
+      <ProductTable
+        products={products}
+        category="internet"
+        onAdd={handleAdd}
+        onUpdate={handleUpdate}
+        onDelete={handleDelete}
+      />
+    </div>
   )
 } 

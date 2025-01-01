@@ -17,7 +17,7 @@ export default function LoginPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const { signIn } = useAuth()
+  const { signIn, signUp } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,7 +32,7 @@ export default function LoginPage() {
           toast.error('Passwords do not match!')
           return
         }
-        await signup(email, password)
+        await signUp(email, password)
         toast.success('Account created successfully!')
       }
       router.push('/')

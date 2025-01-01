@@ -6,21 +6,22 @@ import Footer from '../../components/Footer'
 import { MapPin, Phone, Mail } from 'lucide-react'
 import Breadcrumb from '../../components/Breadcrumb'
 import { scrollToTop } from '../utils/scroll-to-top'
+import Image from 'next/image'
 
 const locations = {
   'Location 1': {
-    address: '123 Main St, City 1, Country',
-    phone: '+1 234-567-8901',
-    email: 'contact1@mobilenetplus.com',
-    coordinates: { lat: 40.7589, lng: -73.9872 },
-    mapSrc: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.1422937950147!2d-73.98731968482413!3d40.75889497932681!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6480299%3A0x55194ec5a1ae072e!2sTimes+Square!5e0!3m2!1sen!2sus!4v1635181106977!5m2!1sen!2sus'
+    address: '224 Hunt Club Road, Ottawa, ON, Canada',
+    phone: '+1 613-800-6130',
+    email: 'mobilenetplus88@gmail.com',
+    coordinates: { lat: 45.3466, lng: -75.6961 },
+    mapSrc: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2803.944440838357!2d-75.69830492326746!3d45.34660457107095!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cce0718cc4a6ad7%3A0x117a2d3e5f36753f!2s224%20Hunt%20Club%20Rd%2C%20Ottawa%2C%20ON%20K1V%201C1!5e0!3m2!1sen!2sca!4v1704949358035!5m2!1sen!2sca'
   },
   'Location 2': {
-    address: '456 Oak St, City 2, Country',
-    phone: '+1 987-654-3210',
-    email: 'contact2@mobilenetplus.com',
-    coordinates: { lat: 34.0522, lng: -118.2437 },
-    mapSrc: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3305.7152203581424!2d-118.24370684857918!3d34.052235180615325!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c75ddc27da13%3A0xe22fdf6f254608f4!2sLos+Angeles%2C+CA!5e0!3m2!1sen!2sus!4v1635181106977!5m2!1sen!2sus'
+    address: '300 Eagleson Road, Ottawa, ON, Canada',
+    phone: '+1 XXX-XXX-XXXX',
+    email: 'mobilenetplus88@gmail.com',
+    coordinates: { lat: 45.3466, lng: -75.6961 },
+    mapSrc: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2803.944440838357!2d-75.84930492326746!3d45.29660457107095!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cd200889668e5ab%3A0xc9d7b898e7374638!2s300%20Eagleson%20Rd%2C%20Kanata%2C%20ON%20K2M%201C9!5e0!3m2!1sen!2sca!4v1704949358035!5m2!1sen!2sca'
   }
 }
 
@@ -57,11 +58,11 @@ const ContactUs = () => {
               <h2 className="text-xl font-semibold mb-4">Join Our Community</h2>
               <div className="flex justify-center space-x-4">
                 <div className="text-center">
-                  <img src="/qr-wechat.png" alt="WeChat QR Code" className="w-32 h-32 mb-2" />
+                  <img src="/img/qr_wechat.png" alt="WeChat QR Code" className="w-32 h-32 mb-2" />
                   <p>WeChat Group</p>
                 </div>
                 <div className="text-center">
-                  <img src="/qr-facebook.png" alt="Facebook QR Code" className="w-32 h-32 mb-2" />
+                  <img src="/img/qr_fb.png" alt="Facebook QR Code" className="w-32 h-32 mb-2" />
                   <p>Facebook Group</p>
                 </div>
               </div>

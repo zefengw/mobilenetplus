@@ -25,7 +25,7 @@ export default function Home() {
                   <Check className="w-6 h-6 text-blue-600" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Reliable Service</h3>
-                <p className="text-gray-600">24/7 customer support and guaranteed uptime for all services.</p>
+                <p className="text-gray-600">Reliable customer support and guaranteed uptime for all services.</p>
               </div>
               <div className="bg-white p-6 rounded-xl shadow-md">
                 <div className="w-12 h-12 bg-blue-600/10 rounded-full flex items-center justify-center mb-4">
@@ -84,7 +84,7 @@ export default function Home() {
         <section className="py-20 bg-gray-900 text-white">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-4xl font-bold mb-6">Ready to Transform Your Connected Life?</h2>
+              <h2 className="text-4xl font-bold mb-6">Ready to Explore your Possibilities?</h2>
               <p className="text-xl mb-8 opacity-90">
                 Contact us today to learn more about our services and find the perfect solution for your needs.
               </p>
