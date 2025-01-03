@@ -1,6 +1,7 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-This project was built using Cursor
+This project was built using Cursor. 
+Short Demo Video of the site: https://drive.google.com/file/d/1YyDnrshE81v228G6Wjbwe8UdstfeOjkH/view?usp=share_link
 
 ## Getting Started
 
